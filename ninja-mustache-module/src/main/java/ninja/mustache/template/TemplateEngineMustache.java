@@ -18,7 +18,6 @@ package ninja.mustache.template;
 
 import java.io.Writer;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import ninja.Context;
 import ninja.Result;
@@ -26,7 +25,6 @@ import ninja.Results;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.mustache.exception.NinjaExceptionHandler;
-import ninja.template.TemplateEngine;
 import ninja.template.TemplateEngineHelper;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
@@ -35,9 +33,6 @@ import ninja.utils.ResponseStreams;
 import org.slf4j.Logger;
 
 import com.github.mustachejava.MustacheFactory;
-import com.google.common.base.CaseFormat;
-import com.google.common.base.Optional;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 /**
@@ -48,19 +43,13 @@ import com.google.inject.Inject;
  * 
  */
 
-public class TemplateEngineMustache implements TemplateEngine {
+public class TemplateEngineMustache extends AbstractTemplateEngine {
 
     private final String FILE_SUFFIX = ".html";
-
-    private final Messages messages;
-
-    private final Lang lang;
 
     private final TemplateEngineHelper templateEngineHelper;
 
     private final NinjaExceptionHandler exceptionHandler;
-
-    private final Logger logger;
 
     private final MustacheFactory mustacheFactory;
 
@@ -103,58 +92,6 @@ public class TemplateEngineMustache implements TemplateEngine {
     }
 
     /**
-     * Just collect the properties and put them into a Map
-     * 
-     * @param context
-     * @param result
-     * @return
-     */
-    private Map getTemplateProperties(Context context, Result result) {
-	Map map = initializeTemplatePropertiesMap(result.getRenderable());
-	insertLanguageProperty(context, result, map);
-	insertSessionProperties(context, map);
-	insertI18nProperties(context, map);
-	insertFlashProperties(context, result, map);
-	return map;
-    }
-
-    /**
-     * Convenience method to translate possible flash scope keys.
-     * 
-     * If you want to set messages with placeholders please do that in your
-     * controller. We only can set simple messages. Eg. A message like
-     * "errorMessage=my name is: {0}" => translate in controller and pass
-     * directly. A message like " errorMessage=An error occurred" => use that as
-     * errorMessage.
-     * 
-     * get keys via {flash.KEYNAME}
-     * 
-     * @param context
-     * @param result
-     * @param map
-     */
-    private void insertFlashProperties(Context context, Result result, Map map) {
-	Map<String, String> translatedFlashCookieMap = Maps.newHashMap();
-	for (Entry<String, String> entry : context.getFlashCookie()
-		.getCurrentFlashCookieData().entrySet()) {
-
-	    String messageValue = null;
-
-	    Optional<String> messageValueOptional = messages.get(
-		    entry.getValue(), context, Optional.of(result));
-
-	    if (!messageValueOptional.isPresent()) {
-		messageValue = entry.getValue();
-	    } else {
-		messageValue = messageValueOptional.get();
-	    }
-	    translatedFlashCookieMap.put(entry.getKey(), messageValue);
-	}
-
-	map.put("flash", translatedFlashCookieMap);
-    }
-
-    /**
      * A method that renders i18n messages and can also render messages with
      * placeholders directly in your template:
      * 
@@ -163,78 +100,9 @@ public class TemplateEngineMustache implements TemplateEngine {
      * @param context
      * @param map
      */
-    private void insertI18nProperties(Context context, Map map) {
+    protected void insertI18nProperties(Context context, Map map) {
 	map.put("i18n", new NinjaMustacheTranslateBundleFunction(messages,
 		context));
-    }
-
-    /**
-     * Put all entries of the session cookie to the map. You can access the
-     * values by their key in the cookie
-     * 
-     * @param context
-     * @param map
-     */
-    private void insertSessionProperties(Context context, Map map) {
-	if (!context.getSessionCookie().isEmpty()) {
-	    map.put("session", context.getSessionCookie().getData());
-	}
-
-	map.put("contextPath", context.getContextPath());
-    }
-
-    /**
-     * set language from framework. You can access it in the templates as {lang}
-     * 
-     * @param context
-     * @param result
-     * @param map
-     */
-    private void insertLanguageProperty(Context context, Result result, Map map) {
-	Optional<String> language = lang.getLanguage(context,
-		Optional.of(result));
-	if (language.isPresent()) {
-	    map.put("lang", language.get());
-	}
-    }
-
-    private Map initializeTemplatePropertiesMap(Object renderableResult) {
-	Map map;
-	// if the object is null we simply render an empty map...
-	if (renderableResult == null) {
-	    map = Maps.newHashMap();
-
-	} else if (renderableResult instanceof Map) {
-	    map = (Map) renderableResult;
-
-	} else {
-	    map = createTemplatePropertiesMapAndInsert(renderableResult);
-
-	}
-	return map;
-    }
-
-    /**
-     * Getting an arbitrary Object, put that into the root of the template
-     * properties map
-     * 
-     * If you are rendering something like Results.ok().render(new MyObject())
-     * Assume MyObject has a public String name field.
-     * 
-     * You can then access the fields in the template like that:
-     * {myObject.publicField}
-     * 
-     * @param renderableResult
-     * @return
-     */
-    private Map createTemplatePropertiesMapAndInsert(Object renderableResult) {
-	String realClassNameLowerCamelCase = CaseFormat.UPPER_CAMEL.to(
-		CaseFormat.LOWER_CAMEL, renderableResult.getClass()
-			.getSimpleName());
-
-	Map map = Maps.newHashMap();
-	map.put(realClassNameLowerCamelCase, renderableResult);
-	return map;
     }
 
     // FIXME!!!
