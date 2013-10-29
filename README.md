@@ -1,8 +1,8 @@
-Rythm template module for Ninja framework.
+Mustache template module for Ninja framework.
 =====================
-Rythm (http://rythmengine.org/) is a feature rich, very high performing and easy to use static template engine written in Java.
+Mustache (http://mustache.github.io/) can be used for HTML, config files, source code - anything. It works by expanding tags in a template using values provided in a hash or object.
 
-This is an easly plugable module for Ninja web framework to write templates using Rythm engine.
+This is an easly plugable module for Ninja web framework to write templates using [mustache.java](https://github.com/spullara/mustache.java) engine.
 
 Getting started
 ---------------
@@ -10,11 +10,11 @@ Getting started
 Setup
 -----
 
-1) Add the ninja-rythm dependency to your pom.xml:
+1) Add the ninja-mustache dependency to your pom.xml:
 
     <dependency>
         <groupId>org.ninjaframework</groupId>
-        <artifactId>ninja-rythm-module</artifactId>
+        <artifactId>ninja-mustache-module</artifactId>
         <version>0.0.1</version>
     </dependency>
 
@@ -22,13 +22,13 @@ Setup
 
     @Override
     protected void configure() {
-        install(new NinjaRythmModule());
+        install(new NinjaMustacheModule());
     }
     
 3) All set. Start writing template in 'views' folder of your application.
 
 
-4) Or check out <code>ninja-rythm-demo</code>. Run any one of the below commands under demo:
+4) Or check out <code>ninja-mustache-demo</code>. Run any one of the below commands under demo:
 
     mvn jetty:run
     OR 
@@ -39,4 +39,3 @@ Modify code/template -- Save -- Refresh browser. Enjoy!
 
 
 ***TODO - Usage in detail.***
-
