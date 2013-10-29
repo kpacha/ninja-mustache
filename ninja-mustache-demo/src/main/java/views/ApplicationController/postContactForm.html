@@ -1,0 +1,19 @@
+{{< views/layout/defaultLayout}}
+{{$body}}
+{{$contact}}
+<li>{{contact.name}}</li>
+<li>{{contact.email}}</li>
+<li>{{contact.description}}</li>
+{{/contact}}
+
+The content of this template is:
+<pre>
+&#123;&#123;$contact&#125;&#125;
+&lt;li&gt;&#123;&#123;contact.name&#125;&#125;&lt;/li&gt;
+&lt;li&gt;&#123;&#123;contact.email&#125;&#125;&lt;/li&gt;
+&lt;li&gt;&#123;&#123;contact.description&#125;&#125;&lt;/li&gt;
+&#123;&#123;/contact&#125;&#125;
+</pre>
+{{/body}}
+{{/ views/layout/defaultLayout}}
+
