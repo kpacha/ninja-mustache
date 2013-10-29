@@ -17,6 +17,7 @@ package ninja.mustache.template;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
@@ -159,6 +160,26 @@ public class TemplateEngineMustacheTest {
     public void testInvokeWithObjectAsRenderable() throws Exception {
 	when(result.getRenderable()).thenReturn(new Object());
 	testInvoke();
+    }
+
+    @Test
+    public void testInvokeHandlesExceptions() throws Exception {
+	when(contextRenerable.finalizeHeaders(Mockito.any(Result.class)))
+		.thenReturn(responseStreams);
+	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	Writer writer = new PrintWriter(byteArrayOutputStream);
+	when(responseStreams.getWriter()).thenReturn(writer);
+
+	when(mustache.execute(Mockito.eq(writer), Mockito.any(HashMap.class)))
+		.thenThrow(Exception.class);
+
+	when(engine.compile(Mockito.eq("TemplateName"))).thenReturn(mustache);
+
+	mustacheTemplate.invoke(contextRenerable, result);
+
+	String expectedResponse = null;
+	verify(exceptionHandler).handleException(Mockito.any(Exception.class),
+		Mockito.eq(expectedResponse), Mockito.eq(responseStreams));
     }
 
     private void mockContext() {
