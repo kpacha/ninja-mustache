@@ -25,9 +25,9 @@ import com.google.inject.AbstractModule;
 
 /**
  * 
- * Bindings for Rythm template engine
+ * Bindings for Mustache template engine
  * 
- * @author sojin, kpacha
+ * @author kpacha
  * 
  */
 public class NinjaMustacheModule extends AbstractModule {

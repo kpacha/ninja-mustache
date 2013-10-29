@@ -16,7 +16,7 @@
 package ninja.mustache.template;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
@@ -39,6 +39,7 @@ import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -51,6 +52,7 @@ import org.slf4j.Logger;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TemplateEngineMustacheTest {
@@ -100,46 +102,27 @@ public class TemplateEngineMustacheTest {
     @Mock
     Mustache mustache;
 
+    TemplateEngineMustache mustacheTemplate;
+
+    @Before
+    public void setUp() throws Exception {
+	mockProperties();
+	mockContext();
+	mockTemplateHelper();
+	mockLanguage();
+	mockCookies();
+	mockFlashCookies();
+
+	mustacheTemplate = new TemplateEngineMustache(messages, lang,
+		ninjaLogger, exceptionHandler, templateHelper,
+		templateEngineManager, ninjaProperties, engine);
+    }
+
     @Test
     public void testInvoke() throws Exception {
-	Properties p = new Properties();
-	p.setProperty("key", "value");
-	when(ninjaProperties.getAllCurrentNinjaProperties()).thenReturn(p);
-
-	TemplateEngineMustache mustacheTemplate = new TemplateEngineMustache(
-		messages, lang, ninjaLogger, exceptionHandler, templateHelper,
-		templateEngineManager, ninjaProperties, engine);
-
-	when(contextRenerable.finalizeHeaders(Mockito.eq(result))).thenReturn(
-		responseStreams);
-	when(contextRenerable.getRoute()).thenReturn(route);
-
-	when(
-		templateHelper.getTemplateForResult(Mockito.eq(route),
-			Mockito.eq(result), Mockito.eq(".html"))).thenReturn(
-		"TemplateName");
-
-	Optional<String> language = Optional.absent();
-	when(
-		lang.getLanguage(Mockito.eq(contextRenerable),
-			Mockito.eq(Optional.of(result)))).thenReturn(language);
-
-	when(cookie.isEmpty()).thenReturn(true);
-	when(contextRenerable.getSessionCookie()).thenReturn(cookie);
-
-	when(flashCookie.getCurrentFlashCookieData()).thenReturn(
-		new HashMap<String, String>());
-	when(contextRenerable.getFlashCookie()).thenReturn(flashCookie);
-
 	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	Writer writer = new PrintWriter(byteArrayOutputStream);
 	when(responseStreams.getWriter()).thenReturn(writer);
-
-	Map<String, Object> parameters = new HashMap<String, Object>();
-	parameters.put("flash", new HashMap<String, String>());
-	parameters.put("i18n", new NinjaMustacheTranslateBundleFunction(
-		messages, contextRenerable));
-	parameters.put("contextPath", null);
 
 	when(mustache.execute(Mockito.eq(writer), Mockito.any(HashMap.class)))
 		.then(new Answer<Writer>() {
@@ -147,9 +130,10 @@ public class TemplateEngineMustacheTest {
 			    throws Throwable {
 			Map<String, Object> parameters = (Map<String, Object>) invocation
 				.getArguments()[1];
-			assertTrue(parameters.containsKey("flash"));
-			assertTrue(parameters.containsKey("i18n"));
-			assertTrue(parameters.containsKey("contextPath"));
+			assertNotNull(parameters.get("flash"));
+			assertNotNull(parameters.get("i18n"));
+			assertEquals("en", parameters.get("lang"));
+			assertEquals("/", parameters.get("contextPath"));
 
 			Writer writer = (Writer) invocation.getArguments()[0];
 			writer.write("Hellow world from Mustache");
@@ -163,5 +147,59 @@ public class TemplateEngineMustacheTest {
 
 	assertEquals("Hellow world from Mustache",
 		byteArrayOutputStream.toString());
+    }
+
+    @Test
+    public void testInvokeWithMapAsRenderable() throws Exception {
+	when(result.getRenderable()).thenReturn(Maps.newHashMap());
+	testInvoke();
+    }
+
+    @Test
+    public void testInvokeWithObjectAsRenderable() throws Exception {
+	when(result.getRenderable()).thenReturn(new Object());
+	testInvoke();
+    }
+
+    private void mockContext() {
+	when(contextRenerable.finalizeHeaders(Mockito.eq(result))).thenReturn(
+		responseStreams);
+	when(contextRenerable.getRoute()).thenReturn(route);
+	when(contextRenerable.getContextPath()).thenReturn("/");
+    }
+
+    private void mockProperties() {
+	Properties p = new Properties();
+	p.setProperty("key", "value");
+	when(ninjaProperties.getAllCurrentNinjaProperties()).thenReturn(p);
+    }
+
+    private void mockFlashCookies() {
+	when(flashCookie.getCurrentFlashCookieData()).thenReturn(
+		new HashMap<String, String>());
+	when(contextRenerable.getFlashCookie()).thenReturn(flashCookie);
+    }
+
+    private void mockCookies() {
+	Map<String, String> cookieData = Maps.newHashMap();
+	cookieData.put("sessionKey", "sessionData");
+	when(cookie.isEmpty()).thenReturn(false);
+	when(cookie.getData()).thenReturn(cookieData);
+	when(contextRenerable.getSessionCookie()).thenReturn(cookie);
+    }
+
+    private void mockTemplateHelper() {
+	when(
+		templateHelper.getTemplateForResult(Mockito.eq(route),
+			Mockito.eq(result), Mockito.eq(".html"))).thenReturn(
+		"TemplateName");
+    }
+
+    private void mockLanguage() {
+	when(contextRenerable.getAcceptLanguage()).thenReturn("en");
+	Optional<String> language = Optional.of("en");
+	when(
+		lang.getLanguage(Mockito.eq(contextRenerable),
+			Mockito.eq(Optional.of(result)))).thenReturn(language);
     }
 }
