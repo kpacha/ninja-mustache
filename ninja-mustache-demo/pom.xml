@@ -23,7 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jettyVersion>9.0.5.v20130815</jettyVersion>
-        <ninjaVersion>2.0.0</ninjaVersion>
+<!--         <ninjaVersion>2.0.1</ninjaVersion> -->
         <ninjaMustacheVersion>0.0.1-SNAPSHOT</ninjaMustacheVersion>
     </properties>
 
@@ -106,12 +106,12 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-core</artifactId>
-            <version>${ninjaVersion}</version>
+            <version>${ninja.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-servlet</artifactId>
-            <version>${ninjaVersion}</version>
+            <version>${ninja.version}</version>
         </dependency>
 
         <dependency>
@@ -130,7 +130,7 @@
         <dependency>
             <groupId>org.ninjaframework</groupId>
             <artifactId>ninja-test-utilities</artifactId>
-            <version>${ninjaVersion}</version>
+            <version>${ninja.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
