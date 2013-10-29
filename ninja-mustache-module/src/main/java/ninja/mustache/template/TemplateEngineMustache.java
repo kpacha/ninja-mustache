@@ -102,6 +102,13 @@ public class TemplateEngineMustache implements TemplateEngine {
 	}
     }
 
+    /**
+     * Just collect the properties and put them into a Map
+     * 
+     * @param context
+     * @param result
+     * @return
+     */
     private Map getTemplateProperties(Context context, Result result) {
 	Map map = initializeTemplatePropertiesMap(result.getRenderable());
 	insertLanguageProperty(context, result, map);

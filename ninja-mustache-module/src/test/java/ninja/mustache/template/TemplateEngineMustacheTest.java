@@ -16,13 +16,14 @@
 package ninja.mustache.template;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import ninja.Context;
@@ -38,12 +39,13 @@ import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 import org.slf4j.Logger;
 
 import com.github.mustachejava.Mustache;
@@ -110,20 +112,6 @@ public class TemplateEngineMustacheTest {
 
 	when(contextRenerable.finalizeHeaders(Mockito.eq(result))).thenReturn(
 		responseStreams);
-
-	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-	when(responseStreams.getOutputStream()).thenReturn(
-		byteArrayOutputStream);
-
-	Writer writer = new PrintWriter(byteArrayOutputStream);
-	when(responseStreams.getWriter()).thenReturn(writer);
-
-	when(cookie.isEmpty()).thenReturn(true);
-	when(contextRenerable.getSessionCookie()).thenReturn(cookie);
-
-	when(flashCookie.getCurrentFlashCookieData()).thenReturn(
-		new HashMap<String, String>());
-	when(contextRenerable.getFlashCookie()).thenReturn(flashCookie);
 	when(contextRenerable.getRoute()).thenReturn(route);
 
 	when(
@@ -136,21 +124,44 @@ public class TemplateEngineMustacheTest {
 		lang.getLanguage(Mockito.eq(contextRenerable),
 			Mockito.eq(Optional.of(result)))).thenReturn(language);
 
-	when(engine.compile(Mockito.eq("TemplateName"))).thenReturn(mustache);
+	when(cookie.isEmpty()).thenReturn(true);
+	when(contextRenerable.getSessionCookie()).thenReturn(cookie);
 
-	when(
-		mustache.execute(Mockito.any(Writer.class),
-			Mockito.eq(new HashMap<String, Object>()))).thenReturn(
-		appendTemplateContent(writer));
+	when(flashCookie.getCurrentFlashCookieData()).thenReturn(
+		new HashMap<String, String>());
+	when(contextRenerable.getFlashCookie()).thenReturn(flashCookie);
+
+	ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	Writer writer = new PrintWriter(byteArrayOutputStream);
+	when(responseStreams.getWriter()).thenReturn(writer);
+
+	Map<String, Object> parameters = new HashMap<String, Object>();
+	parameters.put("flash", new HashMap<String, String>());
+	parameters.put("i18n", new NinjaMustacheTranslateBundleFunction(
+		messages, contextRenerable));
+	parameters.put("contextPath", null);
+
+	when(mustache.execute(Mockito.eq(writer), Mockito.any(HashMap.class)))
+		.then(new Answer<Writer>() {
+		    public Writer answer(InvocationOnMock invocation)
+			    throws Throwable {
+			Map<String, Object> parameters = (Map<String, Object>) invocation
+				.getArguments()[1];
+			assertTrue(parameters.containsKey("flash"));
+			assertTrue(parameters.containsKey("i18n"));
+			assertTrue(parameters.containsKey("contextPath"));
+
+			Writer writer = (Writer) invocation.getArguments()[0];
+			writer.write("Hellow world from Mustache");
+			return writer;
+		    }
+		});
+
+	when(engine.compile(Mockito.eq("TemplateName"))).thenReturn(mustache);
 
 	mustacheTemplate.invoke(contextRenerable, result);
 
-	assertEquals("Hellow world from Mustache" + SystemUtils.LINE_SEPARATOR,
+	assertEquals("Hellow world from Mustache",
 		byteArrayOutputStream.toString());
-    }
-
-    private Writer appendTemplateContent(Writer writer) throws IOException {
-	writer.write("Hellow world from Mustache");
-	return writer;
     }
 }
