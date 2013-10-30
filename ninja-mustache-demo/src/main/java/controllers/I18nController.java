@@ -45,7 +45,7 @@ public class I18nController {
     
     public Result indexWithLanguage(@PathParam("language") String language) {
         
-        Result result = Results.ok().html().template("/I18nController/index.html");
+        Result result = Results.ok().html().template("/views/I18nController/index.mustache");
         // This gets an url like /i18n/en
         // language is then the "en" part of the url.
         
