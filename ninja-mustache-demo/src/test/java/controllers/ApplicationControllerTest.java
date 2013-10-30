@@ -51,7 +51,7 @@ public class ApplicationControllerTest extends NinjaTest {
     public void testHtmlEscapingInTeamplateWorks() {
 
         // IF the escaping works I expect the following string inside the page:
-        String expectedContent = "&lt;script&gt;alert(&apos;Hello&apos;);&lt;/script&gt;";
+        String expectedContent = "&lt;script&gt;alert(&#39;Hello&#39;);&lt;/script&gt;";
         // Some empty headers for now...
         Map<String, String> headers = Maps.newHashMap();
 
