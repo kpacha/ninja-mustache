@@ -100,10 +100,12 @@ public class MustacheTemplateEngine extends AbstractTemplateEngine {
      * {#i18n}mykey{/i18n}
      * 
      * @param context
+     * @param result
      * @param map
      */
-    protected void insertI18nProperties(Context context, Map map) {
-	map.put("i18n", new MustacheTranslateBundleFunction(messages, context));
+    protected void insertI18nProperties(Context context, Result result, Map map) {
+	map.put("i18n", new MustacheTranslateBundleFunction(messages, context,
+		result));
     }
 
     /**

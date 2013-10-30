@@ -17,6 +17,7 @@
 package ninja.mustache.template;
 
 import ninja.Context;
+import ninja.Result;
 import ninja.i18n.Messages;
 
 import com.github.mustachejava.TemplateFunction;
@@ -31,17 +32,23 @@ public class MustacheTranslateBundleFunction implements TemplateFunction {
 
     private final Messages messages;
     private final Context context;
+    private final Optional<Result> result;
 
-    public MustacheTranslateBundleFunction(Messages messages,
-	    Context context) {
+    /**
+     * @param messages
+     * @param context
+     * @param result
+     */
+    public MustacheTranslateBundleFunction(Messages messages, Context context,
+	    Result result) {
 	this.messages = messages;
 	this.context = context;
+	this.result = Optional.of(result);
     }
 
     @Override
     public String apply(String input) {
-	Optional<String> language = Optional.of(context.getAcceptLanguage());
-	return messages.get(input, language).or(input);
+	return messages.get(input, context, result).or(input);
     }
 
 }

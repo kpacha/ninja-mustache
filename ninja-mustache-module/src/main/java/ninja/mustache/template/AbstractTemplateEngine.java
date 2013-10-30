@@ -40,7 +40,7 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
 	insertContextPath(context, map);
 	insertLanguageProperty(context, result, map);
 	insertSessionProperties(context, map);
-	insertI18nProperties(context, map);
+	insertI18nProperties(context, result, map);
 	insertFlashProperties(context, result, map);
 	return map;
     }
@@ -130,9 +130,11 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * Add the required key-values or deltas for i18n
      * 
      * @param context
+     * @param result
      * @param map
      */
-    abstract protected void insertI18nProperties(Context context, Map map);
+    abstract protected void insertI18nProperties(Context context,
+	    Result result, Map map);
 
     /**
      * Convenience method to translate possible flash scope keys.
