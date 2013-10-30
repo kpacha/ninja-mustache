@@ -212,8 +212,8 @@ public class TemplateEngineMustacheTest {
     private void mockTemplateHelper() {
 	when(
 		templateHelper.getTemplateForResult(Mockito.eq(route),
-			Mockito.eq(result), Mockito.eq(".html"))).thenReturn(
-		"TemplateName");
+			Mockito.eq(result), Mockito.eq(".mustache")))
+		.thenReturn("TemplateName");
     }
 
     private void mockLanguage() {

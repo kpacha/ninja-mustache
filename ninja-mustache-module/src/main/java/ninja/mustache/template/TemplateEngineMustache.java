@@ -45,7 +45,7 @@ import com.google.inject.Inject;
 
 public class TemplateEngineMustache extends AbstractTemplateEngine {
 
-    private final String FILE_SUFFIX = ".html";
+    private final String FILE_SUFFIX = ".mustache";
 
     private final TemplateEngineHelper templateEngineHelper;
 

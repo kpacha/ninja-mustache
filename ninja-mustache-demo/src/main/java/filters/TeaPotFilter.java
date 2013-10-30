@@ -38,7 +38,7 @@ public class TeaPotFilter implements Filter {
     public Result filter(FilterChain chain, Context context) {
 
 	return Results.html().status(418)
-		.template("/views/TeaPotFilter/TeaPot.html");
+		.template("/views/TeaPotFilter/TeaPot.mustache");
 
     }
 }
