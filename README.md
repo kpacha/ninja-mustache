@@ -47,6 +47,5 @@ Modify code/template -- Save -- Refresh browser. Enjoy!
 TODO
 -----
 
- - Improve error/exception handler
  - Fix the demo module tests
 
