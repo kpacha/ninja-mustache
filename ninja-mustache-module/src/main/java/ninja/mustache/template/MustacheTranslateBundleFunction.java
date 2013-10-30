@@ -27,12 +27,12 @@ import com.google.common.base.Optional;
  * 
  * @author kpacha
  */
-public class NinjaMustacheTranslateBundleFunction implements TemplateFunction {
+public class MustacheTranslateBundleFunction implements TemplateFunction {
 
     private final Messages messages;
     private final Context context;
 
-    public NinjaMustacheTranslateBundleFunction(Messages messages,
+    public MustacheTranslateBundleFunction(Messages messages,
 	    Context context) {
 	this.messages = messages;
 	this.context = context;

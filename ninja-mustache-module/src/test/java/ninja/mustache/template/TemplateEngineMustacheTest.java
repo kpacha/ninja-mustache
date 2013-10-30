@@ -21,7 +21,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,7 @@ import ninja.Route;
 import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.mustache.exception.NinjaExceptionHandler;
+import ninja.mustache.utils.MustacheConstant;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
 import ninja.template.TemplateEngineHelper;
@@ -103,7 +106,10 @@ public class TemplateEngineMustacheTest {
     @Mock
     Mustache mustache;
 
-    TemplateEngineMustache mustacheTemplate;
+    @Mock
+    Mustache mustacheError;
+
+    MustacheTemplateEngine mustacheTemplate;
 
     @Before
     public void setUp() throws Exception {
@@ -114,7 +120,7 @@ public class TemplateEngineMustacheTest {
 	mockCookies();
 	mockFlashCookies();
 
-	mustacheTemplate = new TemplateEngineMustache(messages, lang,
+	mustacheTemplate = new MustacheTemplateEngine(messages, lang,
 		ninjaLogger, exceptionHandler, templateHelper,
 		templateEngineManager, ninjaProperties, engine);
     }
@@ -171,15 +177,24 @@ public class TemplateEngineMustacheTest {
 	when(responseStreams.getWriter()).thenReturn(writer);
 
 	when(mustache.execute(Mockito.eq(writer), Mockito.any(HashMap.class)))
-		.thenThrow(Exception.class);
-
+		.thenThrow(IOException.class);
 	when(engine.compile(Mockito.eq("TemplateName"))).thenReturn(mustache);
+
+	Writer resultWriter = new StringWriter();
+	resultWriter.write("sample error template");
+	when(
+		mustacheError.execute(Mockito.any(Writer.class),
+			Mockito.any(Object.class))).thenReturn(resultWriter);
+	when(
+		engine.compile(Mockito
+			.eq(MustacheConstant.LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR)))
+		.thenReturn(mustacheError);
 
 	mustacheTemplate.invoke(contextRenerable, result);
 
-	String expectedResponse = null;
-	verify(exceptionHandler).handleException(Mockito.any(Exception.class),
-		Mockito.eq(expectedResponse), Mockito.eq(responseStreams));
+	verify(exceptionHandler).handleException(
+		Mockito.any(IOException.class), Mockito.any(String.class),
+		Mockito.eq(responseStreams));
     }
 
     private void mockContext() {
