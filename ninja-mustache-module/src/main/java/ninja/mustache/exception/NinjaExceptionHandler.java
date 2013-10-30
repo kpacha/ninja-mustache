@@ -56,7 +56,7 @@ public class NinjaExceptionHandler {
 	    // TODO render with proper http status code.
 	    if (ninjaProperties.isProd()) {
 
-		if (response == null || response.endsWith("html")) {
+		if (response == null || response.endsWith("mustache")) {
 		    response = "Server error!";
 		}
 
