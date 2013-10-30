@@ -48,6 +48,5 @@ TODO
 -----
 
  - Improve error/exception handler
- - Port the templates from the demo module to mustache 
- - Usage in detail.
+ - Fix the demo module tests
 
