@@ -19,7 +19,6 @@ package ninja.mustache;
 import ninja.mustache.template.MustacheTemplateEngine;
 import ninja.template.TemplateEngine;
 
-import com.github.mustachejava.DeferringMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import com.google.inject.AbstractModule;
 
@@ -28,12 +27,11 @@ import com.google.inject.AbstractModule;
  * Bindings for Mustache template engine
  * 
  * @author kpacha
- * 
  */
 public class NinjaMustacheModule extends AbstractModule {
     @Override
     protected void configure() {
-	bind(MustacheFactory.class).to(DeferringMustacheFactory.class);
+	bind(MustacheFactory.class).toProvider(MustacheFactoryProvider.class);
 	bind(TemplateEngine.class).to(MustacheTemplateEngine.class);
     }
 }

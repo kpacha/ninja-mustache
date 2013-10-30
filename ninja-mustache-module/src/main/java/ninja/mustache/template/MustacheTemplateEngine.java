@@ -35,6 +35,7 @@ import ninja.utils.ResponseStreams;
 
 import org.slf4j.Logger;
 
+import com.github.mustachejava.MustacheException;
 import com.github.mustachejava.MustacheFactory;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -86,6 +87,8 @@ public class MustacheTemplateEngine extends AbstractTemplateEngine {
 	    writer.flush();
 	    writer.close();
 	} catch (IOException e) {
+	    handleServerError(context, e);
+	} catch (MustacheException e) {
 	    handleServerError(context, e);
 	}
     }
