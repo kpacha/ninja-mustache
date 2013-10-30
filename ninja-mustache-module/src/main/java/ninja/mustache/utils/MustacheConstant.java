@@ -16,7 +16,14 @@
 
 package ninja.mustache.utils;
 
+/**
+ * Default constants for the ninja-mustache module
+ * 
+ * @author kpacha
+ */
 public class MustacheConstant {
 
-    public static final String LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR = "views/error/500internalServerError.html";
+    public static final String DEFAULT_EXTENSION = ".mustache";
+    public static final String LOCATION_VIEW_HTML_INTERNAL_SERVER_ERROR = "views/error/500internalServerError"
+	    + DEFAULT_EXTENSION;
 }

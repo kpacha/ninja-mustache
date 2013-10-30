@@ -22,6 +22,7 @@ import java.io.Writer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import ninja.mustache.utils.MustacheConstant;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
 
@@ -56,7 +57,9 @@ public class NinjaExceptionHandler {
 	    // TODO render with proper http status code.
 	    if (ninjaProperties.isProd()) {
 
-		if (response == null || response.endsWith("mustache")) {
+		if (response == null
+			|| response
+				.endsWith(MustacheConstant.DEFAULT_EXTENSION)) {
 		    response = "Server error!";
 		}
 

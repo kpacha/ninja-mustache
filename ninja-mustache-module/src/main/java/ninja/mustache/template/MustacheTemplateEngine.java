@@ -40,16 +40,11 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 
 /**
- * 
  * Render Ninja with Mustache template engine (http://mustache.github.io/).
  * 
- * @author sojin, kpacha
- * 
+ * @author kpacha
  */
-
 public class MustacheTemplateEngine extends AbstractTemplateEngine {
-
-    private final String FILE_SUFFIX = ".mustache";
 
     private final TemplateEngineHelper templateEngineHelper;
 
@@ -77,7 +72,7 @@ public class MustacheTemplateEngine extends AbstractTemplateEngine {
     public void invoke(Context context, Result result) {
 	ResponseStreams responseStreams = context.finalizeHeaders(result);
 	String templateName = templateEngineHelper.getTemplateForResult(
-		context.getRoute(), result, FILE_SUFFIX);
+		context.getRoute(), result, MustacheConstant.DEFAULT_EXTENSION);
 
 	render(context, responseStreams,
 		getTemplateProperties(context, result), templateName);
@@ -127,7 +122,7 @@ public class MustacheTemplateEngine extends AbstractTemplateEngine {
 
     @Override
     public String getSuffixOfTemplatingEngine() {
-	return FILE_SUFFIX;
+	return MustacheConstant.DEFAULT_EXTENSION;
     }
 
     @Override

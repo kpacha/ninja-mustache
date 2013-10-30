@@ -15,6 +15,11 @@ import com.google.common.base.CaseFormat;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
+/**
+ * Default implementation of the TemplateEngine interface
+ * 
+ * @author ra, kpacha
+ */
 public abstract class AbstractTemplateEngine implements TemplateEngine {
 
     protected Messages messages;
