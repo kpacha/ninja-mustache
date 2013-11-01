@@ -55,7 +55,7 @@ public class NinjaExceptionHandler {
 		    : new PrintWriter(out);
 
 	    // TODO render with proper http status code.
-	    if (ninjaProperties.isProd()) {
+	    if (!ninjaProperties.isDev()) {
 
 		if (response == null
 			|| response

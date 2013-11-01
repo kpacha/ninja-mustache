@@ -28,7 +28,6 @@ import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.mustache.exception.NinjaExceptionHandler;
 import ninja.mustache.utils.MustacheConstant;
-import ninja.template.TemplateEngineHelper;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -47,7 +46,7 @@ import com.google.inject.Inject;
  */
 public class MustacheTemplateEngine extends AbstractTemplateEngine {
 
-    private final TemplateEngineHelper templateEngineHelper;
+    private final MustacheTemplateEngineHelper templateEngineHelper;
 
     private final NinjaExceptionHandler exceptionHandler;
 
@@ -56,7 +55,7 @@ public class MustacheTemplateEngine extends AbstractTemplateEngine {
     @Inject
     public MustacheTemplateEngine(Messages messages, Lang lang,
 	    Logger ninjaLogger, NinjaExceptionHandler exceptionHandler,
-	    TemplateEngineHelper templateEngineHelper,
+	    MustacheTemplateEngineHelper templateEngineHelper,
 	    TemplateEngineManager templateEngineManager,
 	    NinjaProperties ninjaProperties, MustacheFactory mustacheFactory)
 	    throws Exception {
@@ -94,8 +93,7 @@ public class MustacheTemplateEngine extends AbstractTemplateEngine {
     }
 
     /**
-     * A method that renders i18n messages and can also render messages with
-     * placeholders directly in your template:
+     * A method that renders i18n messages:
      * 
      * {#i18n}mykey{/i18n}
      * 

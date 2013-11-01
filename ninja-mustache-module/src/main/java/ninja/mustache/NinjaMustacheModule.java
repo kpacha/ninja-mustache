@@ -21,6 +21,7 @@ import ninja.template.TemplateEngine;
 
 import com.github.mustachejava.MustacheFactory;
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 
 /**
  * 
@@ -31,7 +32,8 @@ import com.google.inject.AbstractModule;
 public class NinjaMustacheModule extends AbstractModule {
     @Override
     protected void configure() {
-	bind(MustacheFactory.class).toProvider(MustacheFactoryProvider.class);
+	bind(MustacheFactory.class).toProvider(MustacheFactoryProvider.class)
+		.in(Singleton.class);
 	bind(TemplateEngine.class).to(MustacheTemplateEngine.class);
     }
 }

@@ -6,24 +6,19 @@ import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
 
-import com.github.mustachejava.DefaultMustacheFactory;
-import com.github.mustachejava.DeferringMustacheFactory;
 import com.github.mustachejava.FallbackMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import com.google.inject.Singleton;
 
 /**
  * Simple mustache factory provider.
  * 
- * In Test mode, inject a
- * {@link com.github.mustachejava.FallbackMustacheFactory}
+ * Just return a {@link com.github.mustachejava.FallbackMustacheFactory}. In dev
+ * mode, always instantiate a new factory
  * 
  * @author kpacha
- * 
  */
-@Singleton
 public class MustacheFactoryProvider implements Provider<MustacheFactory> {
 
     private final Logger logger;
@@ -40,46 +35,53 @@ public class MustacheFactoryProvider implements Provider<MustacheFactory> {
     @Override
     public MustacheFactory get() {
 	MustacheFactory factory = null;
-	if (ninjaProperties.isProd()) {
-	    factory = getProductionFactory();
-	} else if (ninjaProperties.isTest()) {
-	    factory = getTestFactory();
+	if (!ninjaProperties.isDev()) {
+	    factory = getcacheEnabledFactory();
 	} else {
-	    factory = new DefaultMustacheFactory();
+	    factory = getNewFallbackFactory();
 	}
 	return factory;
     }
 
     /**
-     * return the cacheEnabledFactory. if it is null, instantiate a deferring
+     * return the cacheEnabledFactory. if it is null, instantiate a fallback
      * factory
      * 
      * @return
      */
-    private MustacheFactory getProductionFactory() {
+    private MustacheFactory getcacheEnabledFactory() {
 	if (cacheEnabledFactory == null) {
-	    cacheEnabledFactory = new DeferringMustacheFactory();
+	    cacheEnabledFactory = getNewFallbackFactory();
 	}
 	return cacheEnabledFactory;
     }
 
     /**
-     * return the cacheEnabledFactory. if it is null, instantiate a fallback
-     * factory for testing
+     * Instantiate a fallback factory in order to get templates from several
+     * packages (like the ninja-core or the ninja-mustache)
      * 
      * @return
      */
-    private MustacheFactory getTestFactory() {
-	MustacheFactory factory;
-	if (cacheEnabledFactory == null) {
-	    logger.debug("linking to the source folder as a fallback dir for testing");
-	    String srcDir = System.getProperty("user.dir") + File.separator
-		    + "src" + File.separator + "main" + File.separator + "java";
-	    cacheEnabledFactory = new FallbackMustacheFactory(null, new File(
-		    srcDir));
+    private MustacheFactory getNewFallbackFactory() {
+	File srcRoot = getSrcViewsRootFile();
+	Object[] roots = null;
+	if (srcRoot.exists()) {
+	    roots = new Object[] { srcRoot, "", "../../" };
+	} else {
+	    roots = new Object[] { "", "../../" };
 	}
-	factory = cacheEnabledFactory;
-	return factory;
+	return new FallbackMustacheFactory(roots);
+    }
+
+    /**
+     * Init src folder for testing
+     * 
+     * @return
+     */
+    private File getSrcViewsRootFile() {
+	String srcDir = System.getProperty("user.dir") + File.separator + "src"
+		+ File.separator + "main" + File.separator + "java";
+	return new File(srcDir);
     }
 
 }

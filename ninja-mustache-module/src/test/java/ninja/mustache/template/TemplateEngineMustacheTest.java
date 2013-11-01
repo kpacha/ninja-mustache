@@ -38,7 +38,6 @@ import ninja.mustache.exception.NinjaExceptionHandler;
 import ninja.mustache.utils.MustacheConstant;
 import ninja.session.FlashCookie;
 import ninja.session.SessionCookie;
-import ninja.template.TemplateEngineHelper;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -86,7 +85,7 @@ public class TemplateEngineMustacheTest {
     TemplateEngineManager templateEngineManager;
 
     @Mock
-    TemplateEngineHelper templateHelper;
+    MustacheTemplateEngineHelper templateHelper;
 
     @Mock
     Result result;
