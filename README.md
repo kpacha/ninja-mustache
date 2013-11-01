@@ -47,5 +47,5 @@ Modify code/template -- Save -- Refresh browser. Enjoy!
 TODO
 -----
 
- - Fix the demo module tests
+ - Fix the 'not found' test from the  demo module
 
