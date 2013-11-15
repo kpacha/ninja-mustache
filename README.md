@@ -44,12 +44,6 @@ Setup
 Modify code/template -- Save -- Refresh browser. Enjoy!
 
 
-TODO
------
-
- - Fix the 'not found' test from the  demo module
-
-
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/kpacha/ninja-mustache/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
