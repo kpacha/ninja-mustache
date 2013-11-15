@@ -12,7 +12,7 @@
 
     <groupId>org.ninjaframework</groupId>
     <artifactId>ninja-mustache</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Mustache support for Ninja</name>
