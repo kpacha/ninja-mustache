@@ -15,7 +15,7 @@ Setup
     <dependency>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja-mustache-module</artifactId>
-        <version>0.0.1</version>
+        <version>0.1.0</version>
     </dependency>
 
 2) Install the module in your conf.Module:
