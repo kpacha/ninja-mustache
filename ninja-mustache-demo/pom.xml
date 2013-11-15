@@ -17,13 +17,13 @@
     <parent>
         <groupId>org.ninjaframework</groupId>
         <artifactId>ninja-mustache</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.1.0</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jettyVersion>9.0.5.v20130815</jettyVersion>
-        <ninjaMustacheVersion>0.0.1-SNAPSHOT</ninjaMustacheVersion>
+        <ninjaMustacheVersion>0.1.0</ninjaMustacheVersion>
     </properties>
 
     <build>
