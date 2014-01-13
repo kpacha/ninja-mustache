@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.inject.Singleton;
 import ninja.utils.NinjaProperties;
 
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import com.google.inject.Provider;
  * 
  * @author kpacha
  */
+@Singleton
 public class MustacheFactoryProvider implements Provider<MustacheFactory> {
 
     private final Logger logger;
@@ -37,7 +39,7 @@ public class MustacheFactoryProvider implements Provider<MustacheFactory> {
     }
 
     /**
-     * resgister the roots to be passed to the fallback factory
+     * register the roots to be passed to the fallback factory
      */
     private void initResourceRoots() {
 	if (!ninjaProperties.isProd()) {
