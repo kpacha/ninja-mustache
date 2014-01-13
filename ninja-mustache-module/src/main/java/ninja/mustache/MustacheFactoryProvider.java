@@ -1,32 +1,33 @@
 package ninja.mustache;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import ninja.utils.NinjaProperties;
-
-import org.slf4j.Logger;
-
 import com.github.mustachejava.FallbackMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.Singleton;
+import ninja.utils.NinjaProperties;
+import org.slf4j.Logger;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple mustache factory provider.
- * 
+ *
  * Just return a {@link com.github.mustachejava.FallbackMustacheFactory}. In dev
  * mode, always instantiate a new factory
- * 
+ * As per Guice doc <a href="http://code.google.com/p/google-guice/wiki/Scopes">http://code.google.com/p/google-guice/wiki/Scopes</a>
+ * the class marked as @Singleton should be thread safe.
  * @author kpacha
  */
+@Singleton
 public class MustacheFactoryProvider implements Provider<MustacheFactory> {
 
     private final Logger logger;
     private final NinjaProperties ninjaProperties;
-    private MustacheFactory cachedFactory = null;
-    private List<Object> resourceRoots = new ArrayList<Object>();
+    private final List<Object> resourceRoots = new ArrayList<Object>();
+    private MustacheFactory cachedFactory;
 
     @Inject
     public MustacheFactoryProvider(Logger logger,
@@ -37,9 +38,10 @@ public class MustacheFactoryProvider implements Provider<MustacheFactory> {
     }
 
     /**
-     * resgister the roots to be passed to the fallback factory
+     * register the roots to be passed to the fallback factory
+     * Note: This method will be called only once, so conservative synchronized should suffice.
      */
-    private void initResourceRoots() {
+    synchronized private void initResourceRoots() {
 	if (!ninjaProperties.isProd()) {
 	    File srcRoot = getSrcViewsRootFile();
 	    if (srcRoot.exists()) {
@@ -66,12 +68,16 @@ public class MustacheFactoryProvider implements Provider<MustacheFactory> {
     /**
      * return the cacheEnabledFactory. if it is null, instantiate a fallback
      * factory
-     * 
-     * @return
+     *
+     * @return MustacheFactory cached instance.
      */
     private MustacheFactory getCachedFactory() {
 	if (cachedFactory == null) {
-	    cachedFactory = getNewFallbackFactory();
+        synchronized ( this ){
+            if(cachedFactory == null){
+	            cachedFactory = getNewFallbackFactory();
+            }
+        }
 	}
 	return cachedFactory;
     }
@@ -79,7 +85,7 @@ public class MustacheFactoryProvider implements Provider<MustacheFactory> {
     /**
      * Instantiate a fallback factory in order to get templates from several
      * packages (like the ninja-core or the ninja-mustache)
-     * 
+     *
      * @return
      */
     private MustacheFactory getNewFallbackFactory() {
@@ -90,7 +96,7 @@ public class MustacheFactoryProvider implements Provider<MustacheFactory> {
 
     /**
      * Init src folder
-     * 
+     *
      * @return
      */
     private File getSrcViewsRootFile() {

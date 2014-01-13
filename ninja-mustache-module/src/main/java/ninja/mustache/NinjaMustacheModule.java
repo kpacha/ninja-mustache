@@ -32,8 +32,7 @@ import com.google.inject.Singleton;
 public class NinjaMustacheModule extends AbstractModule {
     @Override
     protected void configure() {
-	bind(MustacheFactory.class).toProvider(MustacheFactoryProvider.class)
-		.in(Singleton.class);
+	bind(MustacheFactory.class).toProvider(MustacheFactoryProvider.class);
 	bind(TemplateEngine.class).to(MustacheTemplateEngine.class);
     }
 }
