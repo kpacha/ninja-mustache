@@ -117,11 +117,10 @@ public class I18nControllerTest extends NinjaTest {
         headers.put("Accept-Language", "de-DE");
 
         result = ninjaTestBrowser.makeRequest(getServerAddress()
-                + "/i18n/de", headers);
+                + "/i18n/de-DE", headers);
 
         assertTrue(result
                 .contains(TEXT_DE));
 
     }
-
 }

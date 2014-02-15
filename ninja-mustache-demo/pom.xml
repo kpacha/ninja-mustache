@@ -23,7 +23,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jettyVersion>9.0.5.v20130815</jettyVersion>
-        <ninjaMustacheVersion>0.1.0-SNAPSHOT</ninjaMustacheVersion>
+        <ninjaMustacheVersion>0.2.0-SNAPSHOT</ninjaMustacheVersion>
     </properties>
 
     <build>

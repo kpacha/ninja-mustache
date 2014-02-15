@@ -135,7 +135,7 @@ public class ApplicationController {
 
     public Result session(Context context) {
         // Sets the username "kevin" in the session-cookie
-        context.getSessionCookie().put("username", "kevin");
+        context.getSession().put("username", "kevin");
 
         return Results.html();
 
@@ -148,7 +148,7 @@ public class ApplicationController {
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashSuccess", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().success(flashMessage.get());
+            context.getFlashScope().success(flashMessage.get());
         }
 
         return result;
@@ -160,7 +160,7 @@ public class ApplicationController {
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashError", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().error(flashMessage.get());
+            context.getFlashScope().error(flashMessage.get());
         }
 
         return result;
@@ -172,7 +172,7 @@ public class ApplicationController {
         // sets a 18n flash message and adds a timestamp to make sure formatting works
         Optional<String> flashMessage = messages.get("flashAny", context, Optional.of(result), "PLACEHOLDER");
         if (flashMessage.isPresent()) {
-            context.getFlashCookie().put("any", flashMessage.get());
+            context.getFlashScope().put("any", flashMessage.get());
         }
 
         return result;
