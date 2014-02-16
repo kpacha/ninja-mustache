@@ -121,8 +121,8 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      * @param map
      */
     protected void insertSessionProperties(Context context, Map map) {
-	if (!context.getSessionCookie().isEmpty()) {
-	    map.put("session", context.getSessionCookie().getData());
+	if (!context.getSession().isEmpty()) {
+	    map.put("session", context.getSession().getData());
 	}
     }
 
@@ -153,7 +153,7 @@ public abstract class AbstractTemplateEngine implements TemplateEngine {
      */
     protected void insertFlashProperties(Context context, Result result, Map map) {
 	Map<String, String> translatedFlashCookieMap = Maps.newHashMap();
-	for (Entry<String, String> entry : context.getFlashCookie()
+	for (Entry<String, String> entry : context.getFlashScope()
 		.getCurrentFlashCookieData().entrySet()) {
 
 	    String messageValue = null;

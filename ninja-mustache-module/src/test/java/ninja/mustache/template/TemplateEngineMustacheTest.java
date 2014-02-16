@@ -36,8 +36,8 @@ import ninja.i18n.Lang;
 import ninja.i18n.Messages;
 import ninja.mustache.exception.NinjaExceptionHandler;
 import ninja.mustache.utils.MustacheConstant;
-import ninja.session.FlashCookie;
-import ninja.session.SessionCookie;
+import ninja.session.FlashScope;
+import ninja.session.Session;
 import ninja.template.TemplateEngineManager;
 import ninja.utils.NinjaProperties;
 import ninja.utils.ResponseStreams;
@@ -97,10 +97,10 @@ public class TemplateEngineMustacheTest {
     MustacheFactory engine;
 
     @Mock
-    SessionCookie cookie;
+    Session cookie;
 
     @Mock
-    FlashCookie flashCookie;
+    FlashScope flashScope;
 
     @Mock
     Mustache mustache;
@@ -210,9 +210,9 @@ public class TemplateEngineMustacheTest {
     }
 
     private void mockFlashCookies() {
-	when(flashCookie.getCurrentFlashCookieData()).thenReturn(
-		new HashMap<String, String>());
-	when(contextRenerable.getFlashCookie()).thenReturn(flashCookie);
+	when( flashScope.getCurrentFlashCookieData()).thenReturn(
+            new HashMap<String, String>() );
+	when(contextRenerable.getFlashScope()).thenReturn( flashScope );
     }
 
     private void mockCookies() {
@@ -220,7 +220,7 @@ public class TemplateEngineMustacheTest {
 	cookieData.put("sessionKey", "sessionData");
 	when(cookie.isEmpty()).thenReturn(false);
 	when(cookie.getData()).thenReturn(cookieData);
-	when(contextRenerable.getSessionCookie()).thenReturn(cookie);
+	when(contextRenerable.getSession()).thenReturn(cookie);
     }
 
     private void mockTemplateHelper() {
